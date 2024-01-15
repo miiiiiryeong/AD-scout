@@ -24,7 +24,7 @@ void Local::readCSV() {
         istringstream iss(line);
         Waypoint waypoint;
         char delimiter = ',';
-        if (iss >> waypoint.x >> delimiter >> waypoint.y >> delimiter >> waypoint.index >> delimiter >> waypoint.drivingInfo) {
+        if (iss >> waypoint.x >> delimiter >> waypoint.y >> delimiter >> waypoint.index) {
             waypoints.push_back(waypoint);
 
             // ���Ϳ� ��(���� ����) �߰�
