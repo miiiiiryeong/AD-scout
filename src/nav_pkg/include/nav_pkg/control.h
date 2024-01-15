@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 using namespace std;
+#define WB 0.498
 
 class Control {
 public:

@@ -10,29 +10,40 @@ using namespace std;
 
 // �ϴ� local_path�� global path ���� ���� �ε����κ��� ���� �ε�����ŭ �߶� ���� path
 void Control::PurePursuit(vector < vector <double> > local_path) {
-    lookahead = 7.5; // speed == 38kph�� ��
+    // cout << "pure pursuit is working!!" << "\n";
+    lookahead = 6; //
     target_index = lookahead * 10;
 
     double target_x = 0;
     double target_y = 0;
+    // cout << "local path size: " << local_path.size() << endl;
 
     if (target_index < local_path.size()) {
-        while (true) {
-            target_x = local_path[target_index][0];
-            target_y = local_path[target_index][1];
-            if (lookahead - lookahead * 1 / 3 < sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) && sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) < lookahead + lookahead * 1 / 3) break;
-            else if (sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) < lookahead) {
-                target_index++;
-            }
-            else if (sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) > lookahead) {
-                target_index--;
-            }
-            else break;
-        }
+        // while (true) {
+        //     // cout << "local path size: " << local_path.size() << endl;
+        //     target_x = local_path[target_index][0];
+        //     target_y = local_path[target_index][1];
+        //     // cout << "if 1" << endl;
+        //     if (lookahead - lookahead * 1 / 3 < sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) && sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) < lookahead + lookahead * 1 / 3) break;
+        //     else if (sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) < lookahead) {
+        //         target_index++;
+        //     }
+        //     else if (sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) > lookahead) {
+        //         if (target_index > 0) target_index--;
+        //     }
+        //     else break;
+        // }
+        target_x = local_path[target_index][0];
+        target_y = local_path[target_index][1];
+        // cout << "target_index : " << target_index << endl;
+        // cout << "target_x : " << target_x << endl;
+        // cout << "target_y : " << target_y << endl;
     }
     else {
         int last_x = local_path.size() - 1;
+        // cout << "1" << endl;
         target_x = local_path[last_x][0];
+        // cout << "2" << endl;
 
         int last_y = local_path.size() - 1;
         target_y = local_path[last_y][1];
@@ -43,7 +54,9 @@ void Control::PurePursuit(vector < vector <double> > local_path) {
     // cout << "heading : " << ext_ego_heading << endl;
     double alpha = ext_ego_heading - tmp;
 
-    angle = atan2(2.0 * 2.7 * sin(alpha * (pi / 180.0)) / lookahead, 1.0);
+
+    angle = atan2(2.0 * WB * sin(alpha * (pi / 180.0)) / lookahead, 1.0);
+    // cout << "degree angle is : " << angle * (180.0 / pi) << endl;
 }
 
 void Control::LateralController() {
@@ -53,6 +66,7 @@ void Control::LateralController() {
     double target_ang_vel = angle / sampling_time;
 
     ext_angular_velocity_input = ext_ego_cur_angular_velocity + (target_ang_vel - ext_ego_cur_angular_velocity); // angular velocity input
+    // cout << "angular velocity : " << ext_angular_velocity_input << "\n";
 }
 
 void Control::LongitudinalController(double target_velocity) {

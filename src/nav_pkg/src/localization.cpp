@@ -11,7 +11,7 @@ using namespace std;
 
 void Local::readCSV() {
     vector<Waypoint> waypoints;
-    const string filename = "../../../src/morai_pkg/maps/MORAI_SEMI_MAP.csv";
+    const string filename = "/home/mino/AD-scout/global_path.csv";
     ifstream file(filename);
 
     if (!file.is_open()) {
@@ -56,5 +56,5 @@ void Local::findClosestWaypoint() {
         }
     }
     ext_ego_idx = closestIndex;
-    // cout << "eeeeeeeee" << closestIndex << endl;
+    // cout << "my index : " << closestIndex << endl;
 }

@@ -22,20 +22,23 @@ MotionPlanner motion;
 bool egoTopicFlag = false;
 
 void egoTopicCallback(const scout_msgs::ScoutStatus::ConstPtr& msg) {
-    cout << "Ego topic callback is working" << endl;
+    // cout << "Ego topic callback is working" << endl;
     egoTopicFlag = true;
     ext_ego_cur_linear_velocity = msg->linear_velocity;
     ext_ego_cur_angular_velocity = msg->angular_velocity;
 
-    cout << "linear velocity : "<< ext_ego_cur_linear_velocity << endl;
-    cout << "angular velocity : "<< ext_ego_cur_angular_velocity << endl;
+    // cout << "linear velocity : "<< ext_ego_cur_linear_velocity << endl;
+    // cout << "angular velocity : "<< ext_ego_cur_angular_velocity << endl;
 }
 
 void LocalizationCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
+    // cout << "asdfasdfasdfasdfasdfsadas\n" ;
     ext_ego_x = msg->pose.pose.position.x;
+    cout << "x : " << ext_ego_x << endl;
     ext_ego_y = msg->pose.pose.position.y;
-    tf::Quaternion q(msg->pose.pose.orientation.x, msg->pose.pose.orientation.y, msg->pose.pose.orientation.z, msg->pose.pose.orientation.w );
+    cout << "y : " << ext_ego_y << endl;
+    tf::Quaternion q(msg->pose.pose.orientation.w, msg->pose.pose.orientation.x, msg->pose.pose.orientation.y, msg->pose.pose.orientation.z );
     tf::Matrix3x3 m(q);
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
@@ -44,6 +47,7 @@ void LocalizationCallback(const nav_msgs::Odometry::ConstPtr& msg)
     if (ext_ego_heading < 0){
         ext_ego_heading += 360;
     }
+    cout << "heading : " << ext_ego_heading << "\n";
 }
 
 int main(int argc, char** argv)
@@ -54,20 +58,21 @@ int main(int argc, char** argv)
     geometry_msgs::Twist ctrl_cmd_msg;
     ros::Publisher ctrl_cmd_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
     ros::Subscriber ego_topic_sub = nh.subscribe("/scout_status", 10, egoTopicCallback);
-    ros::Subscriber loc_sub = nh.subscribe("/odometry", 10, LocalizationCallback);
+    ros::Subscriber loc_sub = nh.subscribe("/Odometry", 10, LocalizationCallback);
 
     local.readCSV();
 
     while (ros::ok())
     {
+
+        local.findClosestWaypoint();
+        // cout << "closest waypoint : " << ext_ego_idx << endl;
+        motion.find_local_path(local.global_map);
+        control.run(motion.self_path, 1);
         ctrl_cmd_msg.linear.x = ext_linear_velocity_input;
         ctrl_cmd_msg.angular.z = ext_angular_velocity_input;
         ctrl_cmd_pub.publish(ctrl_cmd_msg);
         egoTopicFlag = false;
-
-        local.findClosestWaypoint();
-        motion.find_local_path(local.global_map);
-        control.run(motion.self_path, 5);
 
         // cout << "target_velocity : " << ext_linear_velocity_input << endl;
         // cout << "ego velocity : " << ext_ego_velocity << endl;

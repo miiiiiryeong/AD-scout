@@ -134,12 +134,19 @@ include_directories(
 
 
 add_executable(master src/master.cpp src/localization.cpp src/control.cpp src/motion_planner.cpp src/extern_variables.cpp)
+add_executable(viz src/viz.cpp src/localization.cpp src/control.cpp src/motion_planner.cpp src/extern_variables.cpp)
 
 add_dependencies(master ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(master scout_msgs_generate_messages_cpp)
 
+add_dependencies(viz ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(viz scout_msgs_generate_messages_cpp)
 
 target_link_libraries(master
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(viz
   ${catkin_LIBRARIES}
 )
 
