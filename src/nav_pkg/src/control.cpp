@@ -6,9 +6,9 @@
 
 using namespace std;
 
-// ÀÏ´Ü local_path´Â global path Â÷·® ÇöÀç ÀÎµ¦½º·ÎºÎÅÍ ÀÏÁ¤ ÀÎµ¦½º¸¸Å­ Àß¶ó¼­ ¸¸µç path
+// ï¿½Ï´ï¿½ local_pathï¿½ï¿½ global path ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½Å­ ï¿½ß¶ï¿½ ï¿½ï¿½ï¿½ï¿½ path
 void Control::PurePursuit(vector < vector <double> > local_path) {
-    lookahead = 7.5; // speed == 38kphÀÏ ¶§
+    lookahead = 7.5; // speed == 38kphï¿½ï¿½ ï¿½ï¿½
     target_index = lookahead * 10;
 
     double target_x = 0;
@@ -55,4 +55,10 @@ void Control::LateralController() {
 
 void Control::LongitudinalController(double target_velocity) {
     ext_linear_velocity_input = target_velocity / 3.6;
+}
+
+void Control::run(vector < vector <double> > local_path, double target_velocity){
+    PurePursuit(local_path);
+    LateralController();
+    LongitudinalController(target_velocity);
 }
