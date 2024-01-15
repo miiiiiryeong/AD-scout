@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf2_ros
   visualization_msgs
+  scout_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -122,7 +123,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include/nav_pkg
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -130,6 +131,17 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/nav_pkg.cpp
 # )
+
+
+add_executable(master src/master.cpp src/localization.cpp src/control.cpp src/motion_planner.cpp src/extern_variables.cpp)
+
+add_dependencies(master ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(master scout_msgs_generate_messages_cpp)
+
+
+target_link_libraries(master
+  ${catkin_LIBRARIES}
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

@@ -18,4 +18,5 @@ public:
 
     void LongitudinalController(double target_velocity);
     void LateralController();
+    void run(vector < vector <double> > local_path, double target_velocity);
 };

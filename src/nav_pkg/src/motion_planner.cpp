@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "motion_planner.h"
+#include "extern_variables.h"
 
 void MotionPlanner::find_local_path(std::vector<std::vector<double>> global_map) {
     // NO PROBLEM

@@ -2,7 +2,9 @@
 #include <cmath>
 #include <algorithm>
 #include <vector>
+
 #include "control.h"
+#include "extern_variables.h"
 
 using namespace std;
 
@@ -14,10 +16,10 @@ void Control::PurePursuit(vector < vector <double> > local_path) {
     double target_x = 0;
     double target_y = 0;
 
-    if (target_index < local_path.first.size()) {
+    if (target_index < local_path.size()) {
         while (true) {
-            target_x = local_path.first[target_index];
-            target_y = local_path.second[target_index];
+            target_x = local_path[target_index][0];
+            target_y = local_path[target_index][1];
             if (lookahead - lookahead * 1 / 3 < sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) && sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) < lookahead + lookahead * 1 / 3) break;
             else if (sqrt(pow(target_x - ext_ego_x, 2) + pow(target_y - ext_ego_y, 2)) < lookahead) {
                 target_index++;
@@ -29,11 +31,11 @@ void Control::PurePursuit(vector < vector <double> > local_path) {
         }
     }
     else {
-        int last_x = local_path.first.size() - 1;
-        target_x = local_path.first[last_x];
+        int last_x = local_path.size() - 1;
+        target_x = local_path[last_x][0];
 
-        int last_y = local_path.second.size() - 1;
-        target_y = local_path.second[last_y];
+        int last_y = local_path.size() - 1;
+        target_y = local_path[last_y][1];
     }
 
     double tmp = fmod(atan2(target_y - ext_ego_y, target_x - ext_ego_x) * (180.0 / pi), 360.0);

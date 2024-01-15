@@ -3,19 +3,25 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <tf/tf.h>
 
 #include "extern_variables.h"
-#include "scout_msgs/scout_status.h" // �´�...?
-#include "scout_msgs/cmd_vel.h" // �´�...?
-#include <nav_msgs/Odometry>
+#include "scout_msgs/ScoutStatus.h" // �´�...?
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Twist.h>
+
+#include "control.h"
+#include "localization.h"
+#include "motion_planner.h"
 
 using namespace std;
 
 Local local;
 Control control;
+MotionPlanner motion;
 bool egoTopicFlag = false;
 
-void egoTopicCallback(const scout_msgs::scout_status::ConstPtr& msg) {
+void egoTopicCallback(const scout_msgs::ScoutStatus::ConstPtr& msg) {
     cout << "Ego topic callback is working" << endl;
     egoTopicFlag = true;
     ext_ego_cur_linear_velocity = msg->linear_velocity;
@@ -25,7 +31,7 @@ void egoTopicCallback(const scout_msgs::scout_status::ConstPtr& msg) {
     cout << "angular velocity : "<< ext_ego_cur_angular_velocity << endl;
 }
 
-void LocalizationCallback(const sensor_msgs::Imu::ConstPtr& msg)
+void LocalizationCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
     ext_ego_x = msg->pose.pose.position.x;
     ext_ego_y = msg->pose.pose.position.y;
@@ -45,11 +51,8 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "master_node");
     ros::NodeHandle nh;
 
-    scout_msgs::cmd_vel ctrl_cmd_msg;
-    ros::Publisher ctrl_cmd_pub = nh.advertise<scout_msgs::cmd_vel>("/cmd_vel", 10);
-    //ros::Subscriber gps_sub = nh.subscribe("/gps", 100, gpsCallback);
-    //ros::Subscriber imu_sub = nh.subscribe("/imu", 100, imuCallback);
-    //ros::Subscriber lidar_sub = nh.subscribe("/detection3d_result", 10, LiDARCallback);
+    geometry_msgs::Twist ctrl_cmd_msg;
+    ros::Publisher ctrl_cmd_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
     ros::Subscriber ego_topic_sub = nh.subscribe("/scout_status", 10, egoTopicCallback);
     ros::Subscriber loc_sub = nh.subscribe("/odometry", 10, LocalizationCallback);
 

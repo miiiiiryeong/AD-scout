@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <yaml-cpp/yaml.h>
 #include <vector>
 #include <fstream>
 #include <string>
@@ -26,7 +27,7 @@ void Local::readCSV() {
         if (iss >> waypoint.x >> delimiter >> waypoint.y >> delimiter >> waypoint.index >> delimiter >> waypoint.drivingInfo) {
             waypoints.push_back(waypoint);
 
-            // º¤ÅÍ¿¡ Çà(³»ºÎ º¤ÅÍ) Ãß°¡
+            // ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ß°ï¿½
             global_map.push_back(std::vector<double>(3));
             global_map[i][0] = double(waypoint.x);
             global_map[i][1] = double(waypoint.y);
